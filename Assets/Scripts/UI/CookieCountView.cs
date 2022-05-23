@@ -8,6 +8,6 @@ public class CookieCountView : MonoBehaviour
     
     void Update()
     {
-        _text.text = GameManager.CookieNum.ToString();
+        _text.text = CostStringConverter.Convert(GameManager.CookieNum);
     }
 }
