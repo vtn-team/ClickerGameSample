@@ -10,13 +10,12 @@ public class GameManager
     private GameManager() { }
     
     int _cookieNum = 0;
-    List<FactoryData> _factories = new List<FactoryData>();
     List<UpgradeData> _upgrades = new List<UpgradeData>();
+    FactoryManager _factoryMan = null;
 
     static public int CookieNum => _instance._cookieNum;
-    static public void AddCookie(int num) { _instance._cookieNum += num; }
     
-    static public List<FactoryData> FactoryInfo => _instance._factories;
+    static public FactoryManager Factory => _instance._factoryMan;
     static public List<UpgradeData> UpgradeInfo => _instance._upgrades;
 
 
@@ -30,33 +29,23 @@ public class GameManager
         }
 
         _cookieNum = save.CookieNum;
-        _factories = save.Factory;
-
-        //オブジェクト拾ってきて、持ってるやつを稼働させる
-        //もっといいやり方はある、次書き換える
+        
         var root = GameObject.Find("/Factory");
-        var factoryList = root.GetComponentsInChildren<AutoBuildFactory>(true).ToList();
-        factoryList.ForEach(f => {
-            var find = _factories.Find(s => s.Id == f.Id);
-            if(find != null)
-            {
-                f.Setup(find.Num);
-            }
-        });
+        _factoryMan = root.GetComponent<FactoryManager>();
+        int cc = _factoryMan.transform.childCount;
+        for (int i = 0; i < cc; ++i)
+        {
+            GameObject.Destroy(_factoryMan.transform.GetChild(i).gameObject);
+        }
+        _factoryMan.Setup(save.Factory);
     }
 
     public void Save()
     {
         SaveData save = new SaveData();
-        
-        //オブジェクト拾ってきて、持ってるやつを稼働させる
-        //もっといいやり方はある、次書き換える
-        var root = GameObject.Find("/Factory");
-        var factoryList = root.GetComponentsInChildren<AutoBuildFactory>().ToList();
-        factoryList.ForEach(f => {
-            save.Factory.Add(new FactoryData() { Id = f.Id, Num = f.HavCount });
-        });
 
+        //Loadが呼ばれている必要がある。ちょっとイケてない
+        _factoryMan.Save(save);
         save.CookieNum = _cookieNum;
 
         //デバッグ時に楽なのでdataPathにしてるけど、persistentDataPathが適切
