@@ -19,6 +19,28 @@ public class GameManager
     static public List<UpgradeData> UpgradeInfo => _instance._upgrades;
 
 
+    static public void AddCookie(BuildType type, int num)
+    {
+        //TODO: Upgrade
+
+        _instance._cookieNum += num;
+    }
+
+    static public void Purchase(ShopItemTable item, int cost)
+    {
+        _instance._cookieNum -= cost;
+        switch(item.Type)
+        {
+            case ItemType.Factory:
+                _instance._factoryMan.Purchase(item.TargetId);
+                break;
+
+            case ItemType.Upgrade:
+                //TODO:
+                break;
+        }
+    }
+
     public void Load()
     {
         //デバッグ時に楽なのでdataPathにしてるけど、persistentDataPathが適切

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 public class FactoryData
 {
     public int Id;
-    public int Num;
+    public int Level;
 }
 
 [Serializable]

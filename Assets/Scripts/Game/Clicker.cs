@@ -10,7 +10,7 @@ public class Clicker : MonoBehaviour
     {
         if(Input.anyKeyDown)
         {
-            GameManager.AddCookie(_addNum);
+            GameManager.AddCookie(BuildType.UserInput, _addNum);
         }
     }
 }

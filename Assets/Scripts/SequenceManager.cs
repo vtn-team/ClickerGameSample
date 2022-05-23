@@ -8,7 +8,9 @@ public class SequenceManager : MonoBehaviour
     {
         Load();
 
-        //後処理
+        var shop = GameObject.Find("/Canvas/Shop");
+        var shopScript = shop.GetComponent<Shop>();
+        shopScript.Setup();
     }
 
     public void Load()
