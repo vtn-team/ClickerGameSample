@@ -1,69 +1,58 @@
-﻿using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public class ShopItem : MonoBehaviour
+public class CostStringConverter
 {
-    [SerializeField] UnityEngine.UI.Text _name;
-    [SerializeField] UnityEngine.UI.Text _cost;
-    [SerializeField] UnityEngine.UI.Text _num;
-
-    int _itemNum = 0;
-    UnityEngine.UI.Button _button;
-    ShopItemTable _item;
-    FactoryData _data;
-
-    public void Setup(ShopItemTable item)
+    static public string Convert(int number)
     {
-        _item = item;
-        _button = GetComponent<UnityEngine.UI.Button>();
-        _button.onClick.AddListener(() =>
+        string ret = "";
+        if (number < 10000)
         {
-            if (Cost() > GameManager.CookieNum) return;
-
-            GameManager.Purchase(_item, Cost());
-            UpdateItem();
-        });
-
-        UpdateItem();
-    }
-
-    int Cost()
-    {
-        return Mathf.FloorToInt(_item.Cost * (1.0f + (float)(_itemNum/10.0f)));
-    }
-
-    public void UpdateItem()
-    {
-        _name.text = _item.Name;
-
-        if (_item.Type == ItemType.Factory)
-        {
-            _itemNum = GameManager.Factory.GetLevel(_item.TargetId);
-            _num.text = _itemNum.ToString();
+            while (true)
+            {
+                int tmp = number % 1000;
+                if (number < 1000)
+                {
+                    ret = tmp + ret;
+                    break;
+                }
+                else
+                {
+                    ret = string.Format(",{0, 3:000}{1}",tmp, ret);
+                    number = number / 1000;
+                }
+            }
+            return ret;
         }
         else
         {
-            _num.text = "";
-        }
-
-        _cost.text = string.Format("Cost:{0}", CostStringConverter.Convert(Cost()));
-    }
-
-    private void Update()
-    {
-        CheckPerchase();
-    }
-
-    void CheckPerchase()
-    {
-        if (Cost() > GameManager.CookieNum)
-        {
-            _cost.color = Color.red;
-        }
-        else
-        {
-            _cost.color = Color.black;
+            string[] DigString = new string[4]
+            {
+                "万",
+                "億",
+                "兆",
+                "京"
+            };
+            int digIndex = 0;
+            int num = number / 10000;
+            while (true)
+            {
+                int tmp = num % 10000;
+                if (num < 10000)
+                {
+                    ret = string.Format("{0: .###}{1}", (float)number / Math.Pow(10000.0f, digIndex+1), DigString[digIndex]);
+                    break;
+                }
+                else
+                {
+                    num = num / 10000;
+                    digIndex++;
+                }
+            }
+            return ret;
         }
     }
 }
