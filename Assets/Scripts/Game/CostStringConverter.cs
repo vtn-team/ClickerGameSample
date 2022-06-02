@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,22 +40,15 @@ public class CostStringConverter
             int num = number / 10000;
             while (true)
             {
-                int tmp = num % 1000;
-                if (num < 1000)
+                int tmp = num % 10000;
+                if (num < 10000)
                 {
-                    if (digIndex == 0)
-                    {
-                        ret = string.Format("{0}{1}", (float)number / 10000.0f, DigString[digIndex]);
-                    }
-                    else
-                    {
-                        ret = string.Format("{0}{1}", (float)number / (10000.0f * digIndex * 1000.0f), DigString[digIndex]);
-                    }
+                    ret = string.Format("{0: .###}{1}", (float)number / Math.Pow(10000.0f, digIndex+1), DigString[digIndex]);
                     break;
                 }
                 else
                 {
-                    num = num / 1000;
+                    num = num / 10000;
                     digIndex++;
                 }
             }
